@@ -1,0 +1,47 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 06.01.2016 15:17:20
+
+newmtl klon
+	Ns 28.000000
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.588235 0.588235 0.588235
+	Kd 0.588235 0.588235 0.588235
+	Ks 0.135000 0.135000 0.135000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka E:\my_new_work\Don_seegmiller_chameleon\chameleon_d.psd
+	map_Kd E:\my_new_work\Don_seegmiller_chameleon\chameleon_d.psd
+	map_bump Map__4_Normal_Bump.tga
+
+newmtl 02___Default
+	Ns 28.000000
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.588235 0.588235 0.588235
+	Kd 0.588235 0.588235 0.588235
+	Ks 0.135000 0.135000 0.135000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka E:\my_new_work\Don_seegmiller_chameleon\chameleon_d.psd
+	map_Kd E:\my_new_work\Don_seegmiller_chameleon\chameleon_d.psd
+	map_bump Map__4_Normal_Bump.tga
+
+newmtl o4i
+	Ns 28.000000
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.588235 0.588235 0.588235
+	Kd 0.588235 0.588235 0.588235
+	Ks 0.135000 0.135000 0.135000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka E:\my_new_work\Don_seegmiller_chameleon\chameleon_d.psd
+	map_Kd E:\my_new_work\Don_seegmiller_chameleon\chameleon_d.psd
+	map_bump Map__4_Normal_Bump.tga

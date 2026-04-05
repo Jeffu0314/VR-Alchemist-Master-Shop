@@ -16,7 +16,7 @@ MonoBehaviour:
   unlockCost: 0
   potionIcon: {fileID: 0}
   ingredients:
-  - ingredientName: Red Herb
+  - ingredientName: RedHerb
     requiredAmount: 1
   - ingredientName: Water
     requiredAmount: 1
