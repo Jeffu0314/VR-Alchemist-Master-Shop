@@ -15,8 +15,11 @@ MonoBehaviour:
   potionName: FocusDust
   unlockCost: 0
   potionIcon: {fileID: 0}
+  potionPrefab: {fileID: 7245684656158066191, guid: f17711abc03da1f4fa9ec38a3f7402fd, type: 3}
+  liquidColor: {r: 0, g: 0, b: 0, a: 0}
+  potionPrice: 200
   ingredients:
   - ingredientName: YellowPetal
-    requiredAmount: 2
+    requiredAmount: 1
   - ingredientName: Honey
     requiredAmount: 1

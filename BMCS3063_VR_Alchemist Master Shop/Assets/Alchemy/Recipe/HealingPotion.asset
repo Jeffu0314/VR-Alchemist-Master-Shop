@@ -15,6 +15,9 @@ MonoBehaviour:
   potionName: HealingPotion
   unlockCost: 0
   potionIcon: {fileID: 0}
+  potionPrefab: {fileID: 7580046133896132687, guid: a6020c9b05dfeed41bc78a15c110bf61, type: 3}
+  liquidColor: {r: 0, g: 0, b: 0, a: 0}
+  potionPrice: 200
   ingredients:
   - ingredientName: RedHerb
     requiredAmount: 1
