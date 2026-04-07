@@ -7,18 +7,26 @@ public class NPCController : MonoBehaviour
     public NPCState currentState;
 
     private NavMeshAgent agent;
+    private Animator anim; // 新增：动画组件
     private Transform orderPoint;
     private Transform exitPoint;
 
-    // 距离判定阈值 (根据你的模型大小，如果 NPC 走不到位，可以稍微调大到 0.8f)
+    // 距离判定阈值
     [SerializeField] private float stopDistance = 0.5f;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
 
+        // --- 新增：初始化动画组件 ---
+        anim = GetComponent<Animator>();
+        if (anim != null)
+        {
+            // 确保由 Agent 控制位移，防止模型“瞬移”或“乱飘”
+            anim.applyRootMotion = false;
+        }
+
         // 1. 自动寻找场景中的关键点位置
-        // 注意：确保你的 Hierarchy 场景里确实有这两个名字一模一样的物体
         GameObject op = GameObject.Find("OrderPoint");
         GameObject ep = GameObject.Find("ExitPoint");
 
@@ -34,11 +42,19 @@ public class NPCController : MonoBehaviour
 
     void Update()
     {
-        // 状态机逻辑
+        // --- 新增：每帧同步物理速度到动画参数 ---
+        if (anim != null && agent != null)
+        {
+            // 获取 Agent 的实时移动速率
+            float currentSpeed = agent.velocity.magnitude;
+            // 把这个值传给 Animator 里的 "Speed" 参数
+            anim.SetFloat("Speed", currentSpeed);
+        }
+
+        // 原有的状态机逻辑完全保留
         switch (currentState)
         {
             case NPCState.Entering:
-                // 检查是否到达柜台
                 if (!agent.pathPending && agent.remainingDistance <= stopDistance)
                 {
                     OnReachedCounter();
@@ -46,7 +62,6 @@ public class NPCController : MonoBehaviour
                 break;
 
             case NPCState.Leaving:
-                // 检查是否到达出口
                 if (!agent.pathPending && agent.remainingDistance <= stopDistance)
                 {
                     OnReachedExit();
@@ -55,7 +70,7 @@ public class NPCController : MonoBehaviour
         }
     }
 
-    // --- 状态切换函数 ---
+    // --- 原有状态切换函数（完全保留） ---
 
     void GoToCounter()
     {
@@ -68,14 +83,11 @@ public class NPCController : MonoBehaviour
 
     void OnReachedCounter()
     {
-        if (currentState == NPCState.Waiting) return; // 防止重复触发
+        if (currentState == NPCState.Waiting) return;
 
         currentState = NPCState.Waiting;
-
-        // 停止移动，保持站立
         agent.ResetPath();
 
-        // --- 关键：在这里生成随机订单 ---
         if (AlchemyManager.Instance != null)
         {
             AlchemyManager.Instance.AssignRandomOrder();
@@ -83,14 +95,11 @@ public class NPCController : MonoBehaviour
         }
     }
 
-    // 供 NPCReceiver 调用的函数
     public void OnReceivePotion()
     {
         if (exitPoint == null || currentState == NPCState.Leaving) return;
 
         currentState = NPCState.Leaving;
-
-        // 先清除之前的路径，再设置新目的地
         agent.ResetPath();
         agent.SetDestination(exitPoint.position);
 
@@ -101,13 +110,11 @@ public class NPCController : MonoBehaviour
     {
         Debug.Log("<color=red>NPC:</color> 已到达出口，销毁并请求下一个。");
 
-        // 1. 走到门口了，告诉管理器可以准备下一个 NPC 了
         if (NPCManager.Instance != null)
         {
             NPCManager.Instance.SpawnNextNPC();
         }
 
-        // 2. 销毁自己
         Destroy(gameObject);
     }
 }

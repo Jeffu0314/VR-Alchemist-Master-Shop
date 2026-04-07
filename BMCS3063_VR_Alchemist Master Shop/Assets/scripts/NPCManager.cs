@@ -1,70 +1,55 @@
 using UnityEngine;
-using UnityEngine.AI;
+using System.Collections;
+using System.Collections.Generic;
 
 public class NPCManager : MonoBehaviour
 {
     public static NPCManager Instance;
 
     [Header("NPC Settings")]
-    public GameObject npcPrefab;
-    public Transform spawnPoint;
-    public float delayBetweenNPCs = 3.0f;
+    // 1. 修改这里：把单一的 Prefab 变成一个列表
+    [Tooltip("把你的 5 个不同样子的 NPC 预制体拖进这个列表")]
+    public List<GameObject> npcPrefabs = new List<GameObject>();
 
-    [Header("Debug")]
-    public bool spawnOnStart = true;
+    public Transform spawnPoint;
+    public float spawnDelay = 3f;
 
     void Awake()
     {
-        // 单例初始化
         if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     void Start()
     {
-        if (spawnOnStart)
-        {
-            SpawnNextNPC();
-        }
+        // 游戏开始，生成第一个随机 NPC
+        SpawnNextNPC();
     }
 
-    // 供其他脚本（如 NPCReceiver 或 NPCController）调用的生成函数
     public void SpawnNextNPC()
     {
-        // 关键修复：删除之前的 Object.FindFirstObjectByType 检查！
-        // 因为调用这个函数时，旧 NPC 可能还没彻底从内存中移除。
-
-        Debug.Log("<color=cyan>NPCManager:</color> 收到生成请求，" + delayBetweenNPCs + "秒后生成新顾客。");
-
-        // 使用 CancelInvoke 确保不会因为意外重复调用产生多个 NPC
-        CancelInvoke("CreateNPC");
-        Invoke("CreateNPC", delayBetweenNPCs);
+        StartCoroutine(SpawnRoutine());
     }
 
-    void CreateNPC()
+    IEnumerator SpawnRoutine()
     {
-        if (npcPrefab == null || spawnPoint == null)
+        Debug.Log("<color=lightblue>系统:</color> 正在准备下一位顾客...");
+        yield return new WaitForSeconds(spawnDelay);
+
+        // 2. 核心逻辑：从 5 个预制体里随机选一个
+        if (npcPrefabs.Count > 0 && spawnPoint != null)
         {
-            Debug.LogError("NPCManager: 请检查 Inspector 中的赋值！");
-            return;
+            int randomIndex = Random.Range(0, npcPrefabs.Count);
+            GameObject selectedPrefab = npcPrefabs[randomIndex];
+
+            // 3. 生成选中的那个随机 NPC
+            Instantiate(selectedPrefab, spawnPoint.position, spawnPoint.rotation);
+
+            Debug.Log($"<color=lightblue>系统:</color> 一位新的顾客 ({selectedPrefab.name}) 进入了商店。");
         }
-
-        // 1. 生成 NPC 实例
-        GameObject newNPC = Instantiate(npcPrefab, spawnPoint.position, spawnPoint.rotation);
-
-        // 建议：给生成的 NPC 改个名字，方便在层级面板看清楚
-        newNPC.name = "Customer_NPC";
-
-        // 2. 导航贴地处理
-        NavMeshAgent agent = newNPC.GetComponent<NavMeshAgent>();
-        if (agent != null)
+        else
         {
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(spawnPoint.position, out hit, 1.5f, NavMesh.AllAreas))
-            {
-                agent.Warp(hit.position);
-            }
+            Debug.LogError("NPCManager: npcPrefabs 列表为空或没有设置 SpawnPoint！");
         }
-
-        Debug.Log("<color=green>NPCManager:</color> 新顾客已进入商店。");
     }
 }
