@@ -85,6 +85,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: Water
   amount: 1
+  ingredientColor: {r: 0, g: 0.7490196, b: 1, a: 1}
 --- !u!54 &4981137997666758779
 Rigidbody:
   m_ObjectHideFlags: 0

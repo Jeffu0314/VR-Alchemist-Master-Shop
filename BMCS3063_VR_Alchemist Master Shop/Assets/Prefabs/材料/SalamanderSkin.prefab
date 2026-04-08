@@ -264,6 +264,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: SalamanderSkin
   amount: 1
+  ingredientColor: {r: 0.54509807, g: 0.27058825, b: 0.07450981, a: 1}
 --- !u!65 &1528547885394738314
 BoxCollider:
   m_ObjectHideFlags: 0

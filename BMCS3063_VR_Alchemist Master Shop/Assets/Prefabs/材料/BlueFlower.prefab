@@ -582,6 +582,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: BlueFlower
   amount: 1
+  ingredientColor: {r: 0.25490198, g: 0.4117647, b: 0.88235295, a: 1}
 --- !u!65 &7874726925340948885
 BoxCollider:
   m_ObjectHideFlags: 0

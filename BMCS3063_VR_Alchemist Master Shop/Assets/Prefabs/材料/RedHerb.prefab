@@ -109,6 +109,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: RedHerb
   amount: 1
+  ingredientColor: {r: 0.69803923, g: 0.13333334, b: 0.13333334, a: 1}
 --- !u!54 &7570488648282343354
 Rigidbody:
   m_ObjectHideFlags: 0

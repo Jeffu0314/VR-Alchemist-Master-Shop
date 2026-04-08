@@ -15,7 +15,7 @@ MonoBehaviour:
   potionName: CoolingDraught
   unlockCost: 0
   potionIcon: {fileID: 0}
-  potionPrefab: {fileID: 7376170704580325920, guid: c374e63ac1100a44d8f5b4bb8604b608, type: 3}
+  potionPrefab: {fileID: 1207235094909564794, guid: cd564e4fc9b88b24987118065cb4b765, type: 3}
   liquidColor: {r: 0, g: 0, b: 0, a: 0}
   potionPrice: 200
   ingredients:

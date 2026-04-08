@@ -364,6 +364,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: DistilledWater
   amount: 1
+  ingredientColor: {r: 0.8784314, g: 1, b: 1, a: 1}
 --- !u!54 &3011014232942244015
 Rigidbody:
   m_ObjectHideFlags: 0

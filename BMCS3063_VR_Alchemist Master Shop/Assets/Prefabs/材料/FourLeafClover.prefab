@@ -253,6 +253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: FourLeafClover
   amount: 1
+  ingredientColor: {r: 0.19607843, g: 0.8039216, b: 0.19607843, a: 1}
 --- !u!54 &3069433487237040240
 Rigidbody:
   m_ObjectHideFlags: 0

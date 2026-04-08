@@ -15,6 +15,9 @@ MonoBehaviour:
   potionName: FirePotion
   unlockCost: 1200
   potionIcon: {fileID: 0}
+  potionPrefab: {fileID: 2097332601840417687, guid: 9c94cc3fafcc362449a2ea3adab3db4d, type: 3}
+  liquidColor: {r: 0, g: 0, b: 0, a: 0}
+  potionPrice: 0
   ingredients:
   - ingredientName: LavaTear
     requiredAmount: 2

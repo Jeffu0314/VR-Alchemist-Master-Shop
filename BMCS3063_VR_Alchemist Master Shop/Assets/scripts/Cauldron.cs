@@ -1,20 +1,61 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
+using UnityEngine.UI;
 
 public class Cauldron : MonoBehaviour
 {
-    // 存储当前坩埚内已经加入的材料及其总量
+    [Header("Ingredients Logic")]
     public Dictionary<string, float> currentMix = new Dictionary<string, float>();
+    private Color internalMixedColor;
+    private float totalIngredientAmount = 0f;
 
     [Header("Stirring Settings")]
     public float stirRequired = 10.0f;
-    private float currentStirProgress = 0f;
+    public float currentStirProgress = 0f;
     private bool isFinished = false;
 
-    [Header("Spawn Settings")]
-    public Transform spawnPoint; // 药水生成的坐标点
+    [Header("UI Settings")]
+    public Slider progressSlider;
+    public GameObject uiCanvasGroup;
 
-    // --- 材料进入检测 ---
+    [Header("Visual Effects & Feedback (直接拖入场景里的物体)")]
+    // 修改为 ParticleSystem 类型，这样直接拖入层级里的物体
+    public ParticleSystem splashParticle;   // 拖入层级里的 Splash Effect
+    public ParticleSystem successParticle;  // 拖入层级里的 Success Flare
+    public ParticleSystem failParticle;     // 拖入层级里的 Fail Smoke
+    public Renderer liquidRenderer;
+    public Transform liquidVisual;
+
+    [Header("Shader Settings")]
+    public string shallowColorName = "_ShallowColor";
+    public string deepColorName = "_DeepColor";
+    public float colorTransitionTime = 1.2f;
+
+    [Header("Spawn Settings")]
+    public Transform spawnPoint;
+    public GameObject junkPotionPrefab;
+
+    private Color originalLiquidColor;
+    private Coroutine colorChangeCoroutine;
+
+    void Start()
+    {
+        if (liquidRenderer != null && liquidRenderer.material.HasProperty(shallowColorName))
+        {
+            originalLiquidColor = liquidRenderer.material.GetColor(shallowColorName);
+            internalMixedColor = originalLiquidColor;
+        }
+
+        if (uiCanvasGroup != null) uiCanvasGroup.SetActive(false);
+        if (progressSlider != null)
+        {
+            progressSlider.minValue = 0;
+            progressSlider.maxValue = stirRequired;
+            progressSlider.value = 0;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         Ingredient ingredient = other.GetComponent<Ingredient>();
@@ -22,111 +63,143 @@ public class Cauldron : MonoBehaviour
         if (ingredient != null)
         {
             if (currentMix.ContainsKey(ingredient.ingredientName))
-            {
                 currentMix[ingredient.ingredientName] += ingredient.amount;
-            }
             else
-            {
                 currentMix.Add(ingredient.ingredientName, ingredient.amount);
+
+            float newTotalAmount = totalIngredientAmount + ingredient.amount;
+            float blendWeight = (totalIngredientAmount == 0) ? 0.8f : ingredient.amount / newTotalAmount;
+            internalMixedColor = Color.Lerp(internalMixedColor, ingredient.ingredientColor, blendWeight);
+            totalIngredientAmount = newTotalAmount;
+
+            // --- 粒子修复逻辑 ---
+            if (splashParticle != null)
+            {
+                // 将粒子移动到碰撞位置（稍微往上一点防止被淹没）
+                splashParticle.transform.position = other.transform.position + Vector3.up * 0.1f;
+
+                var main = splashParticle.main;
+                main.startColor = ingredient.ingredientColor; // 同步颜色
+
+                splashParticle.Stop(); // 先停止之前的
+                splashParticle.Play(); // 播放
             }
 
-            Debug.Log($"Added {ingredient.ingredientName}. Total ingredients: {currentMix.Count}");
-            Destroy(other.gameObject); // 销毁掉入的材料
+            if (liquidRenderer != null)
+            {
+                if (colorChangeCoroutine != null) StopCoroutine(colorChangeCoroutine);
+                colorChangeCoroutine = StartCoroutine(SmoothChangeColor(internalMixedColor));
+            }
+
+            Destroy(other.gameObject);
         }
     }
 
-    // 由搅拌棒调用的增加进度函数
+    IEnumerator SmoothChangeColor(Color targetShallow)
+    {
+        Material mat = liquidRenderer.material;
+        if (!mat.HasProperty(shallowColorName)) yield break;
+
+        Color startShallow = mat.GetColor(shallowColorName);
+        Color startDeep = mat.HasProperty(deepColorName) ? mat.GetColor(deepColorName) : originalLiquidColor * 0.4f;
+        Color targetDeep = targetShallow * 0.4f;
+
+        float elapsed = 0;
+        while (elapsed < colorTransitionTime)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / colorTransitionTime;
+            float curve = Mathf.SmoothStep(0, 1, t);
+
+            mat.SetColor(shallowColorName, Color.Lerp(startShallow, targetShallow, curve));
+            if (mat.HasProperty(deepColorName))
+                mat.SetColor(deepColorName, Color.Lerp(startDeep, targetDeep, curve));
+
+            yield return null;
+        }
+    }
+
     public void AddStirProgress(float amount)
     {
-        if (isFinished) return;
+        if (isFinished || currentMix.Count == 0) return;
+
+        if (uiCanvasGroup != null && !uiCanvasGroup.activeSelf)
+            uiCanvasGroup.SetActive(true);
 
         currentStirProgress += amount;
-        // 打印搅拌百分比
-        Debug.Log($"Stirring Progress: {Mathf.Clamp01(currentStirProgress / stirRequired) * 100:F0}%");
+
+        if (progressSlider != null) progressSlider.value = currentStirProgress;
+
+        if (liquidVisual != null)
+            liquidVisual.Rotate(Vector3.up, amount * 150f);
 
         if (currentStirProgress >= stirRequired)
-        {
             FinishPotion();
-        }
     }
 
     void FinishPotion()
     {
         isFinished = true;
+        if (uiCanvasGroup != null) uiCanvasGroup.SetActive(false);
 
-        // 1. 获取当前 NPC 要求的订单数据
         RecipeData targetRecipe = AlchemyManager.Instance.currentCustomerOrder;
-
-        // 2. 判定是否成功（包含解锁检查和比例检查）
-        if (CheckSuccess(targetRecipe))
-        {
-            Debug.Log("<color=green>制作成功！</color>");
-
-            // --- 核心：动态生成该配方指定的模型 ---
-            if (targetRecipe.potionPrefab != null)
-            {
-                GameObject finalPotion = Instantiate(targetRecipe.potionPrefab, spawnPoint.position, spawnPoint.rotation);
-
-                // 注入数据：让生成的药水知道自己属于哪个配方，方便 NPCReceiver 识别
-                PotionObject pObj = finalPotion.GetComponent<PotionObject>();
-                if (pObj != null)
-                {
-                    pObj.potionType = targetRecipe;
-                }
-            }
-            else
-            {
-                Debug.LogError($"{targetRecipe.potionName} 没有分配 Potion Prefab!");
-            }
-
-            ResetCauldron();
-        }
-        else
-        {
-            Debug.Log("<color=red>制作失败！</color> 可能原因：材料不对、误差太大或未解锁该药水。");
-            // 这里可以触发冒烟特效提示玩家
-            ResetCauldron();
-        }
+        if (CheckSuccess(targetRecipe)) HandleSuccess(targetRecipe);
+        else HandleFailure();
     }
 
     bool CheckSuccess(RecipeData recipe)
     {
-        if (recipe == null) return false;
-
-        // --- 校验 1：解锁状态检查 ---
-        // 只有已解锁的药水才能制作成功
-        if (!AlchemyManager.Instance.unlockedRecipes.Contains(recipe))
-        {
-            Debug.LogWarning("该药水尚未解锁，无法完成制作！");
-            return false;
-        }
-
-        // --- 校验 2：材料比例检查 ---
-        float totalError = 0f;
+        if (recipe == null || !AlchemyManager.Instance.unlockedRecipes.Contains(recipe)) return false;
         foreach (var req in recipe.ingredients)
         {
-            if (currentMix.ContainsKey(req.ingredientName))
-            {
-                // 计算该材料的误差比例
-                float error = Mathf.Abs(currentMix[req.ingredientName] - req.requiredAmount) / req.requiredAmount;
-                totalError += error;
-            }
-            else
-            {
-                // 缺少订单要求的必要材料
-                return false;
-            }
+            if (!currentMix.ContainsKey(req.ingredientName)) return false;
+            float error = Mathf.Abs(currentMix[req.ingredientName] - req.requiredAmount) / req.requiredAmount;
+            if (error > 0.2f) return false;
         }
+        return currentMix.Count == recipe.ingredients.Count;
+    }
 
-        // 允许的总误差阈值为 20%
-        return totalError < 0.2f;
+    void HandleSuccess(RecipeData targetRecipe)
+    {
+        // 播放层级里的成功粒子
+        if (successParticle != null) successParticle.Play();
+
+        if (targetRecipe.potionPrefab != null)
+        {
+            GameObject finalPotion = Instantiate(targetRecipe.potionPrefab, spawnPoint.position, spawnPoint.rotation);
+            PotionObject pObj = finalPotion.GetComponent<PotionObject>();
+            if (pObj != null) pObj.potionType = targetRecipe;
+        }
+        ResetCauldron();
+    }
+
+    void HandleFailure()
+    {
+        // 播放层级里的失败粒子
+        if (failParticle != null) failParticle.Play();
+
+        if (junkPotionPrefab != null) Instantiate(junkPotionPrefab, spawnPoint.position, spawnPoint.rotation);
+
+        if (colorChangeCoroutine != null) StopCoroutine(colorChangeCoroutine);
+        colorChangeCoroutine = StartCoroutine(SmoothChangeColor(Color.black));
+
+        ResetCauldron();
     }
 
     public void ResetCauldron()
     {
         currentMix.Clear();
         currentStirProgress = 0f;
+        totalIngredientAmount = 0f;
         isFinished = false;
-        Debug.Log("坩埚已重置，等待下一位顾客。");
+        if (progressSlider != null) progressSlider.value = 0;
+        Invoke(nameof(StartResetColor), 3.0f);
+    }
+
+    void StartResetColor()
+    {
+        internalMixedColor = originalLiquidColor;
+        if (colorChangeCoroutine != null) StopCoroutine(colorChangeCoroutine);
+        colorChangeCoroutine = StartCoroutine(SmoothChangeColor(originalLiquidColor));
     }
 }

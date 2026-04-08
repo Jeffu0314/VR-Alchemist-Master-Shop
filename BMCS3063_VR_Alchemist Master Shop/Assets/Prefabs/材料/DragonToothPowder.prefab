@@ -129,6 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: DragonToothPowder
   amount: 1
+  ingredientColor: {r: 0.9607843, g: 0.9607843, b: 0.8627451, a: 1}
 --- !u!54 &7320246737586735201
 Rigidbody:
   m_ObjectHideFlags: 0

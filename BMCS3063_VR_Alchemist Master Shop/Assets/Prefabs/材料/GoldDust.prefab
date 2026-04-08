@@ -129,6 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: GoldDust
   amount: 1
+  ingredientColor: {r: 1, g: 0.84313726, b: 0, a: 1}
 --- !u!54 &6820393393710693664
 Rigidbody:
   m_ObjectHideFlags: 0

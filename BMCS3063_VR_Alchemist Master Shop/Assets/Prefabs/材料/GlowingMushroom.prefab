@@ -108,6 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: GlowingMushroom
   amount: 1
+  ingredientColor: {r: 0, g: 1, b: 0.49803922, a: 1}
 --- !u!65 &4809873565819854641
 BoxCollider:
   m_ObjectHideFlags: 0

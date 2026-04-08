@@ -15,7 +15,7 @@ MonoBehaviour:
   potionName: FocusDust
   unlockCost: 0
   potionIcon: {fileID: 0}
-  potionPrefab: {fileID: 7245684656158066191, guid: f17711abc03da1f4fa9ec38a3f7402fd, type: 3}
+  potionPrefab: {fileID: 7314977725471118639, guid: 1df8e0ecc3cfa974b94d5abf9d9f1f80, type: 3}
   liquidColor: {r: 0, g: 0, b: 0, a: 0}
   potionPrice: 200
   ingredients:

@@ -524,6 +524,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: YellowPetal
   amount: 1
+  ingredientColor: {r: 1, g: 0.84313726, b: 0, a: 1}
 --- !u!1 &826323852107592348
 GameObject:
   m_ObjectHideFlags: 0

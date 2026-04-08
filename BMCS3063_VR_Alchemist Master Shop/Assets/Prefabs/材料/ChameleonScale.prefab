@@ -490,6 +490,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: ChameleonScale
   amount: 1
+  ingredientColor: {r: 0.49803922, g: 1, b: 0.83137256, a: 1}
 --- !u!65 &8707858486435318009
 BoxCollider:
   m_ObjectHideFlags: 0

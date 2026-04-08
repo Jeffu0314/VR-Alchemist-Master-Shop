@@ -15,6 +15,9 @@ MonoBehaviour:
   potionName: ManaPotion
   unlockCost: 500
   potionIcon: {fileID: 0}
+  potionPrefab: {fileID: 5263543817094800283, guid: d9c8e7a93c7f88c4c8d4df1435eeb532, type: 3}
+  liquidColor: {r: 0, g: 0, b: 0, a: 0}
+  potionPrice: 0
   ingredients:
   - ingredientName: BlueFlower
     requiredAmount: 3

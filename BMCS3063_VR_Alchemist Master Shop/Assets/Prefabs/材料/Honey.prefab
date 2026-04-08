@@ -129,6 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
   ingredientName: Honey
   amount: 1
+  ingredientColor: {r: 1, g: 0.7254902, b: 0.05882353, a: 1}
 --- !u!54 &1843662029564995987
 Rigidbody:
   m_ObjectHideFlags: 0
