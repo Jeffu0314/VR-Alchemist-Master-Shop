@@ -14,6 +14,14 @@ public class AlchemyManager : MonoBehaviour
     public int currentCoins = 0;
     public int winTarget = 5000;
 
+    public NPCOrderUI currentNPCUI;
+
+    void Start()
+    {
+        // Start 运行在所有脚本的 Awake 之后，这样更安全
+        AssignRandomOrder();
+    }
+
     void Awake()
     {
         if (Instance == null)
@@ -62,11 +70,18 @@ public class AlchemyManager : MonoBehaviour
         {
             int randomIndex = Random.Range(0, unlockedRecipes.Count);
             currentCustomerOrder = unlockedRecipes[randomIndex];
-            Debug.Log("<color=yellow>新订单生成: </color>" + currentCustomerOrder.potionName);
-        }
-        else
-        {
-            Debug.LogWarning("没有已解锁的配方，无法分配订单！");
+            Debug.Log("<color=yellow>1. 经理：新订单已生成！</color>");
+
+            if (currentNPCUI != null)
+            {
+                Debug.Log("<color=green>2. 经理：找到 NPC 脚本了，现在去拍它肩膀！</color>");
+                currentNPCUI.ShowOrder(currentCustomerOrder);
+            }
+            else
+            {
+                // 如果你在控制台看到这一行，说明你没拖拽引用！
+                Debug.LogError("<color=red>3. 经理：哎呀！我找不到 NPC 的引用，快去 Inspector 检查！</color>");
+            }
         }
     }
 
