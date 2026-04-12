@@ -1,70 +1,66 @@
 using UnityEngine;
 using TMPro;
-using System.Collections; // 必须引用，才能使用协程
+using System.Collections;
 
 public class NPCOrderUI : MonoBehaviour
 {
     [Header("UI 引用")]
-    public GameObject orderCanvas;
-    public TextMeshProUGUI nameText;
+    public GameObject orderCanvas;    // NPC 自己的 Canvas
+    public TextMeshProUGUI nameText;  // NPC 自己的 Text
 
-    [Header("时间设置")]
-    public float waitBeforeShow = 5.0f; // 显示前的等待时间
-    public float displayDuration = 5.0f; // UI 显示的时长
+    [Header("计时设置")]
+    public float waitSeconds = 5.0f;     // 出现前的等待
+    public float displaySeconds = 5.0f;  // 显示的时长
+
+    // 存储这个 NPC 独有的订单，防止被全局变量覆盖
+    private RecipeData myPrivateOrder;
 
     private void Awake()
     {
-        // 确保一开始是隐藏的
         if (orderCanvas != null) orderCanvas.SetActive(false);
     }
 
-    private void Start()
+    // 由 NPCController 在到达柜台时调用
+    public void StartOrderProcess()
     {
-        if (AlchemyManager.Instance != null)
-        {
-            // 1. 先把自己设为经理关注的 NPC
-            AlchemyManager.Instance.currentNPCUI = this;
-
-            // 2. 开启协程流程：等待 -> 分配订单并显示 -> 再等待 -> 消失
-            StartCoroutine(OrderDisplayRoutine());
-        }
+        StartCoroutine(IndependentOrderRoutine());
     }
 
-    // 核心逻辑：控制显示和消失的闹钟
-    private IEnumerator OrderDisplayRoutine()
+    private IEnumerator IndependentOrderRoutine()
     {
-        // --- 第一步：静默等待 ---
-        // NPC 已经报到了，但此时 UI 还没开
-        yield return new WaitForSeconds(waitBeforeShow);
+        yield return new WaitForSeconds(waitSeconds);
 
-        // --- 第二步：触发订单并显示 ---
         if (AlchemyManager.Instance != null)
         {
-            // 此时才让经理分配订单，经理会反过来调用下方的 ShowOrder
-            AlchemyManager.Instance.AssignRandomOrder();
+            // 向经理领一个随机订单并存入私有变量
+            myPrivateOrder = AlchemyManager.Instance.GetRandomUnlockedRecipe();
+
+            if (myPrivateOrder != null)
+            {
+                ShowOrder(myPrivateOrder);
+            }
         }
 
-        // --- 第三步：保持显示状态 ---
-        // UI 已经在 ShowOrder 里打开了，现在数 5 秒
-        yield return new WaitForSeconds(displayDuration);
-
-        // --- 第四步：自动隐藏 ---
+        yield return new WaitForSeconds(displaySeconds);
         HideOrder();
-        Debug.Log($"{gameObject.name} 的订单显示时间结束，已隐藏。");
     }
 
-    // 由 AlchemyManager 的 AssignRandomOrder 自动调用
     public void ShowOrder(RecipeData recipe)
     {
-        if (recipe == null || orderCanvas == null || nameText == null) return;
+        if (orderCanvas == null || nameText == null || recipe == null) return;
 
         nameText.text = "I need: " + recipe.potionName;
         orderCanvas.SetActive(true);
-        Debug.Log($"{gameObject.name} 的订单 UI 开启。");
     }
 
     public void HideOrder()
     {
         if (orderCanvas != null) orderCanvas.SetActive(false);
+    }
+
+    // --- 核心修复：添加这个方法，让 Cauldron 能读到订单 ---
+    public RecipeData GetMyOrder()
+    {
+        return myPrivateOrder;
     }
 }

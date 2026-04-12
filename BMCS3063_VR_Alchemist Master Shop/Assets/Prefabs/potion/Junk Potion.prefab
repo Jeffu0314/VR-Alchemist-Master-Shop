@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 7555760097565338716}
   m_Layer: 0
   m_Name: Junk Potion
-  m_TagString: Untagged
+  m_TagString: Potion
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -70,8 +70,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 414e561d7ab7a9b419f8527e075d3464, type: 2}
-  - {fileID: 2100000, guid: 790383adbe33b574c9d3e99660dfabe2, type: 2}
+  - {fileID: 2100000, guid: 5d4c6e839b44b644ca0f3b48e3b505c0, type: 2}
+  - {fileID: 2100000, guid: f43ca2f3cf454ea4da4203245fb3bcfe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

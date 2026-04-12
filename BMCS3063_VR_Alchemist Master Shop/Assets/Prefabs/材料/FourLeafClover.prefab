@@ -195,7 +195,7 @@ GameObject:
   - component: {fileID: 5843757679820180713}
   m_Layer: 0
   m_Name: FourLeafClover
-  m_TagString: Untagged
+  m_TagString: Ingredient
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

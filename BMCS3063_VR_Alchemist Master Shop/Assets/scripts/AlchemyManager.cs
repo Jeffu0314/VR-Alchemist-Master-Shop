@@ -10,23 +10,18 @@ public class AlchemyManager : MonoBehaviour
     public List<RecipeData> unlockedRecipes = new List<RecipeData>(); // 玩家已学会的配方
 
     [Header("Game Status")]
-    public RecipeData currentCustomerOrder; // 当前 NPC 想要的药水
+    // 注意：在多 NPC 模式下，这个变量仅作为“最后生成的订单”记录，主要判定应参考 NPC 自身
+    public RecipeData currentCustomerOrder;
     public int currentCoins = 0;
     public int winTarget = 5000;
-
-    public NPCOrderUI currentNPCUI;
-
-    void Start()
-    {
-        // Start 运行在所有脚本的 Awake 之后，这样更安全
-        AssignRandomOrder();
-    }
 
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            // 如果这个经理跨场景，可以取消注释下面这行
+            // DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -51,7 +46,24 @@ public class AlchemyManager : MonoBehaviour
         Debug.Log("初始化完成，当前可用药水种类: " + unlockedRecipes.Count);
     }
 
-    // 增加金币（卖出药水时调用）
+    // --- 核心修复：添加这个方法供 NPCOrderUI 调用 ---
+    public RecipeData GetRandomUnlockedRecipe()
+    {
+        if (unlockedRecipes.Count > 0)
+        {
+            int randomIndex = Random.Range(0, unlockedRecipes.Count);
+            RecipeData selectedRecipe = unlockedRecipes[randomIndex];
+
+            // 同步更新一下全局变量，方便调试查看
+            currentCustomerOrder = selectedRecipe;
+            return selectedRecipe;
+        }
+
+        Debug.LogError("经理：没有已解锁的配方！");
+        return null;
+    }
+
+    // 增加金币
     public void AddCoins(int amount)
     {
         currentCoins += amount;
@@ -63,29 +75,19 @@ public class AlchemyManager : MonoBehaviour
         }
     }
 
-    // 为进入商店的 NPC 随机分配一个“已解锁”的订单
-    public void AssignRandomOrder()
+    // 在 AlchemyManager.cs 中添加
+    public bool SpendCoins(int amount)
     {
-        if (unlockedRecipes.Count > 0)
+        if (currentCoins >= amount)
         {
-            int randomIndex = Random.Range(0, unlockedRecipes.Count);
-            currentCustomerOrder = unlockedRecipes[randomIndex];
-            Debug.Log("<color=yellow>1. 经理：新订单已生成！</color>");
-
-            if (currentNPCUI != null)
-            {
-                Debug.Log("<color=green>2. 经理：找到 NPC 脚本了，现在去拍它肩膀！</color>");
-                currentNPCUI.ShowOrder(currentCustomerOrder);
-            }
-            else
-            {
-                // 如果你在控制台看到这一行，说明你没拖拽引用！
-                Debug.LogError("<color=red>3. 经理：哎呀！我找不到 NPC 的引用，快去 Inspector 检查！</color>");
-            }
+            currentCoins -= amount;
+            Debug.Log("<color=yellow>消费成功：</color>" + amount);
+            return true;
         }
+        return false;
     }
 
-    // 解锁新药水的逻辑（如果你的游戏之后有升级系统可以用到）
+    // 解锁新药水
     public void UnlockNewPotion(RecipeData newRecipe)
     {
         if (!unlockedRecipes.Contains(newRecipe))
@@ -97,6 +99,6 @@ public class AlchemyManager : MonoBehaviour
 
     void TriggerGameWin()
     {
-        Debug.Log("<color=cyan><b>[胜利]</b></color> 赚够了 5000 金币！");
+        Debug.Log("<color=cyan><b>[胜利]</b></color> 赚够了目标金币！");
     }
 }

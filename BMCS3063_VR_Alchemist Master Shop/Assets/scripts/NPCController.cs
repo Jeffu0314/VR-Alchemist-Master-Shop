@@ -88,10 +88,17 @@ public class NPCController : MonoBehaviour
         currentState = NPCState.Waiting;
         agent.ResetPath();
 
-        if (AlchemyManager.Instance != null)
+        // --- 核心修正：不再调用 AssignRandomOrder ---
+        // 而是通知自己身上的 NPCOrderUI 脚本开始工作
+        NPCOrderUI myUI = GetComponent<NPCOrderUI>();
+        if (myUI != null)
         {
-            AlchemyManager.Instance.AssignRandomOrder();
-            Debug.Log("<color=yellow>NPC:</color> 已到达柜台，发出订单：" + AlchemyManager.Instance.currentCustomerOrder.potionName);
+            myUI.StartOrderProcess();
+            Debug.Log("<color=yellow>NPC:</color> 已到达柜台，通知 UI 脚本领单并计时。");
+        }
+        else
+        {
+            Debug.LogError("NPC: 找不到 NPCOrderUI 脚本，请检查 Prefab 是否挂载了该组件！");
         }
     }
 

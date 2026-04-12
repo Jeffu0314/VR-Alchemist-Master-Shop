@@ -6,6 +6,8 @@ TagManager:
   tags:
   - CauldronLiquid
   - Recycle
+  - Ingredient
+  - Potion
   layers:
   - Default
   - TransparentFX

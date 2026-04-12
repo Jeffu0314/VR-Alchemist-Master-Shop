@@ -388,7 +388,7 @@ GameObject:
   - component: {fileID: 7874726925340948885}
   m_Layer: 0
   m_Name: BlueFlower
-  m_TagString: Untagged
+  m_TagString: Ingredient
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
