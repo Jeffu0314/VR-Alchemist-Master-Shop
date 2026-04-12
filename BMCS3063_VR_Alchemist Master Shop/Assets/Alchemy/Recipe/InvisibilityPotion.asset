@@ -17,7 +17,7 @@ MonoBehaviour:
   potionIcon: {fileID: 0}
   potionPrefab: {fileID: 8410524688190898949, guid: df88518d0f194034d8f0d46ad85aa1c4, type: 3}
   liquidColor: {r: 0, g: 0, b: 0, a: 0}
-  potionPrice: 0
+  potionPrice: 1500
   ingredients:
   - ingredientName: ChameleonScale
     requiredAmount: 1

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7451738515705187798}
   - component: {fileID: 7120056909557398135}
   - component: {fileID: 3629833022092931206}
+  - component: {fileID: -4420097041919581871}
   m_Layer: 0
   m_Name: LavaTear
   m_TagString: Ingredient
@@ -286,3 +287,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 16.850899, y: 28.362999, z: 16.975899}
   m_Center: {x: 37.02615, y: 15.2416, z: 0.00064992905}
+--- !u!114 &-4420097041919581871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3423072569718166940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
+  ingredientPrefab: {fileID: 3423072569718166940}

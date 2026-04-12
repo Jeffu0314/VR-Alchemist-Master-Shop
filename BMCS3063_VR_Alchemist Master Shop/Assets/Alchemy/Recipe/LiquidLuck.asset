@@ -17,13 +17,13 @@ MonoBehaviour:
   potionIcon: {fileID: 0}
   potionPrefab: {fileID: 2374805723670453474, guid: 595aaa80af2f408438fa61ed349edd7d, type: 3}
   liquidColor: {r: 0, g: 0, b: 0, a: 0}
-  potionPrice: 0
+  potionPrice: 1800
   ingredients:
   - ingredientName: FourLeafClover
     requiredAmount: 1
   - ingredientName: GoldDust
     requiredAmount: 2
-  - ingredientName: 'Honey '
+  - ingredientName: Honey
     requiredAmount: 1
   - ingredientName: PureWater
     requiredAmount: 1

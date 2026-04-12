@@ -283,6 +283,7 @@ GameObject:
   - component: {fileID: 8911208160694036016}
   - component: {fileID: 6923280635084216033}
   - component: {fileID: 6542418039833276548}
+  - component: {fileID: 2300271624854705657}
   m_Layer: 0
   m_Name: YellowPetal
   m_TagString: Ingredient
@@ -525,6 +526,19 @@ MonoBehaviour:
   ingredientName: YellowPetal
   amount: 1
   ingredientColor: {r: 1, g: 0.84313726, b: 0, a: 1}
+--- !u!114 &2300271624854705657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680298095576670458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
+  ingredientPrefab: {fileID: 680298095576670458}
 --- !u!1 &826323852107592348
 GameObject:
   m_ObjectHideFlags: 0

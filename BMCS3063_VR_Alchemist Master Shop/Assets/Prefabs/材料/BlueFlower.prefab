@@ -386,6 +386,7 @@ GameObject:
   - component: {fileID: 2138624658032593383}
   - component: {fileID: 1005486749726139883}
   - component: {fileID: 7874726925340948885}
+  - component: {fileID: 2450916590241955243}
   m_Layer: 0
   m_Name: BlueFlower
   m_TagString: Ingredient
@@ -604,6 +605,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.47962904, y: 0.34776658, z: 0.3062907}
   m_Center: {x: 0.07843971, y: 0.13822362, z: 0.092740506}
+--- !u!114 &2450916590241955243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2484765642350418708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
+  ingredientPrefab: {fileID: 2484765642350418708}
 --- !u!1 &2635536623974248122
 GameObject:
   m_ObjectHideFlags: 0

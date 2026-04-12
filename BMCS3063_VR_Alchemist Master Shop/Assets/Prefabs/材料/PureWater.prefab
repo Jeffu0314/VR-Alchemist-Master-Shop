@@ -230,6 +230,7 @@ GameObject:
   - component: {fileID: 4099272926243563301}
   - component: {fileID: 4530581053900513229}
   - component: {fileID: 4883586122823785062}
+  - component: {fileID: -4995035200543391412}
   m_Layer: 0
   m_Name: PureWater
   m_TagString: Ingredient
@@ -449,6 +450,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.023137093, y: 0.032246184, z: 0.023011535}
   m_Center: {x: -0.00020837784, y: 0.022313809, z: -0.0008220623}
+--- !u!114 &-4995035200543391412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3812972401561454139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
+  ingredientPrefab: {fileID: 3812972401561454139}
 --- !u!1 &5785633409476122769
 GameObject:
   m_ObjectHideFlags: 0

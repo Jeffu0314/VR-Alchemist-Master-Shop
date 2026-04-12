@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7570488648282343354}
   - component: {fileID: 8382970962676466582}
   - component: {fileID: 8006466198300964376}
+  - component: {fileID: 7321751670773591277}
   m_Layer: 0
   m_Name: RedHerb
   m_TagString: Ingredient
@@ -30,13 +31,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2425915598329584844}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.9961947, y: -0, z: -0, w: 0.08715573}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 3.4480834, y: 0.8575, z: -23.1535}
   m_LocalScale: {x: 4.2739673, y: 4.2739673, z: 4.2739673}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &400718606926822130
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -287,3 +288,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.058566846, y: 0.039660033, z: 0.07195131}
   m_Center: {x: 0.0027540997, y: 0.0003231477, z: -0.010285859}
+--- !u!114 &7321751670773591277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2425915598329584844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
+  ingredientPrefab: {fileID: 2425915598329584844}

@@ -17,7 +17,7 @@ MonoBehaviour:
   potionIcon: {fileID: 0}
   potionPrefab: {fileID: 674360775609686081, guid: 71b6be6c096fafa44a04557d135b700c, type: 3}
   liquidColor: {r: 0, g: 0, b: 0, a: 0}
-  potionPrice: 0
+  potionPrice: 2000
   ingredients:
   - ingredientName: SalamanderSkin
     requiredAmount: 1

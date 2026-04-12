@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6706833585208430664}
   - component: {fileID: 4237206251484696132}
   - component: {fileID: 1528547885394738314}
+  - component: {fileID: -3947676449065170224}
   m_Layer: 0
   m_Name: SalamanderSkin
   m_TagString: Ingredient
@@ -286,3 +287,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.7724, y: 5.947805, z: 6.028367}
   m_Center: {x: -0.07243401, y: -0.8837645, z: 1.2691904}
+--- !u!114 &-3947676449065170224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454107736848476584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
+  ingredientPrefab: {fileID: 3454107736848476584}

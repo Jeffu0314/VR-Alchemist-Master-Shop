@@ -375,6 +375,7 @@ GameObject:
   - component: {fileID: 8707858486435318009}
   - component: {fileID: 76653641391575756}
   - component: {fileID: 1531119554520378753}
+  - component: {fileID: 1405453220821051026}
   m_Layer: 0
   m_Name: ChameleonScale
   m_TagString: Ingredient
@@ -668,6 +669,19 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
+--- !u!114 &1405453220821051026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1441347229844544109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
+  ingredientPrefab: {fileID: 1441347229844544109}
 --- !u!1 &2035602627788433484
 GameObject:
   m_ObjectHideFlags: 0

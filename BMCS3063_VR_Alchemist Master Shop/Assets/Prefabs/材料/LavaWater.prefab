@@ -233,6 +233,7 @@ GameObject:
   - component: {fileID: 771617002550733473}
   - component: {fileID: 8382942881323195135}
   - component: {fileID: 7318725514421505317}
+  - component: {fileID: -899329868242463063}
   m_Layer: 0
   m_Name: LavaWater
   m_TagString: Ingredient
@@ -452,6 +453,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.023137093, y: 0.032246184, z: 0.023011535}
   m_Center: {x: -0.00020837784, y: 0.022313809, z: -0.0008220623}
+--- !u!114 &-899329868242463063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6686212818400337917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
+  ingredientPrefab: {fileID: 6686212818400337917}
 --- !u!1 &8803534314971233544
 GameObject:
   m_ObjectHideFlags: 0

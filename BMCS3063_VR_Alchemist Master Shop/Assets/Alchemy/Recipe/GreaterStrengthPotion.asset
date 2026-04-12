@@ -17,7 +17,7 @@ MonoBehaviour:
   potionIcon: {fileID: 0}
   potionPrefab: {fileID: 6158501446157813288, guid: 6ccb81eca14f56442a4416e1826b0c39, type: 3}
   liquidColor: {r: 0, g: 0, b: 0, a: 0}
-  potionPrice: 0
+  potionPrice: 300
   ingredients:
   - ingredientName: DragonToothPowder
     requiredAmount: 1
