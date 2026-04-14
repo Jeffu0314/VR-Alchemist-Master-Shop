@@ -15,6 +15,8 @@ public class AlchemyManager : MonoBehaviour
     public int currentCoins = 0;
     public int winTarget = 5000;
 
+    private bool hasTriggeredWinMenu = false;
+
     void Awake()
     {
         if (Instance == null)
@@ -99,6 +101,20 @@ public class AlchemyManager : MonoBehaviour
 
     void TriggerGameWin()
     {
+        // 如果已经弹过窗了，就不再执行
+        if (hasTriggeredWinMenu) return;
+
         Debug.Log("<color=cyan><b>[胜利]</b></color> 赚够了目标金币！");
+
+        // 核心逻辑：调用我们下面要写的 UI 控制器
+        if (VictoryUIController.Instance != null)
+        {
+            hasTriggeredWinMenu = true; // 标记已触发
+            VictoryUIController.Instance.ShowMenu();
+        }
+        else
+        {
+            Debug.LogError("找不到 VictoryUIController 实例！请确保场景中有该 UI 并在脚本中设置了 Instance");
+        }
     }
 }

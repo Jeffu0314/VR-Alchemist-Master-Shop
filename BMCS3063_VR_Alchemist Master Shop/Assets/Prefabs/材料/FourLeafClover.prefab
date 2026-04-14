@@ -193,7 +193,6 @@ GameObject:
   - component: {fileID: 1014570408172657620}
   - component: {fileID: 3069433487237040240}
   - component: {fileID: 5843757679820180713}
-  - component: {fileID: -1680799402978930026}
   m_Layer: 0
   m_Name: FourLeafClover
   m_TagString: Ingredient
@@ -411,19 +410,6 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
---- !u!114 &-1680799402978930026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6551487497185639441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
-  ingredientPrefab: {fileID: 6551487497185639441}
 --- !u!1 &8145094102865184915
 GameObject:
   m_ObjectHideFlags: 0

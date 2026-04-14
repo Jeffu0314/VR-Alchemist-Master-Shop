@@ -30,7 +30,7 @@ public class Cauldron : MonoBehaviour
     public string shallowColorName = "_ShallowColor";
     public string deepColorName = "_DeepColor";
     public float colorTransitionTime = 1.8f;
-    [Range(0, 1)] public float baseColorInfluence = 0.3f;
+    [Range(0, 1)] public float baseColorInfluence = 0.3f; // 初始锅水对第一份材料的影响力
 
     [Header("Spawn Settings")]
     public Transform spawnPoint;
@@ -62,28 +62,35 @@ public class Cauldron : MonoBehaviour
 
         if (ingredient != null)
         {
-            // --- 物理混色算法 ---
             float addedAmount = ingredient.amount;
+
+            // --- 自然颜色混合逻辑开始 ---
             if (totalIngredientAmount == 0)
             {
+                // 第一份材料：从锅水原色渐变到材料颜色
+                // 此时 internalMixedColor 直接设为目标色，由协程去完成视觉过渡
                 internalMixedColor = Color.Lerp(originalLiquidColor, ingredient.ingredientColor, 1f - baseColorInfluence);
             }
             else
             {
+                // 物理混合：基于当前总量计算新颜色的权重
                 float total = totalIngredientAmount + addedAmount;
                 float ratio = addedAmount / total;
+
+                // 重点：使用线性插值混合。加红色就变红，加黄色就变橘
                 internalMixedColor = Color.Lerp(internalMixedColor, ingredient.ingredientColor, ratio);
             }
 
             totalIngredientAmount += addedAmount;
+            // --- 自然颜色混合逻辑结束 ---
 
-            // 记录配方
+            // 记录配方 (保持原样)
             if (currentMix.ContainsKey(ingredient.ingredientName))
                 currentMix[ingredient.ingredientName] += addedAmount;
             else
                 currentMix.Add(ingredient.ingredientName, addedAmount);
 
-            // --- 粒子效果 ---
+            // 粒子反馈 (保持原样)
             if (splashParticle != null)
             {
                 splashParticle.transform.position = other.transform.position + Vector3.up * 0.1f;
@@ -93,15 +100,13 @@ public class Cauldron : MonoBehaviour
                 splashParticle.Play();
             }
 
-            // --- 平滑变色 ---
+            // --- 触发平滑变色协程 ---
             if (liquidRenderer != null)
             {
                 if (colorChangeCoroutine != null) StopCoroutine(colorChangeCoroutine);
                 colorChangeCoroutine = StartCoroutine(SmoothChangeColor(internalMixedColor));
             }
 
-            // --- 核心优化：回收逻辑 ---
-            // 不要 Destroy，而是直接隐藏，让它回到 ObjectPool 的队列中
             other.gameObject.SetActive(false);
         }
     }
@@ -110,25 +115,35 @@ public class Cauldron : MonoBehaviour
     {
         Material mat = liquidRenderer.material;
         Color startShallow = mat.GetColor(shallowColorName);
-        Color targetDeep = targetShallow * 0.4f;
+
+        // 计算对应的深色层，保持视觉深度
+        Color targetDeep = targetShallow * 0.35f; // 自然深色通常是浅色的 35%
         targetDeep.a = 1.0f;
 
         float elapsed = 0;
         while (elapsed < colorTransitionTime)
         {
             elapsed += Time.deltaTime;
-            float t = elapsed / colorTransitionTime;
-            float curve = t * t * (3f - 2f * t);
+            // 使用 SmoothStep 提供最自然的淡入淡出（S型）插值曲线
+            float t = Mathf.SmoothStep(0, 1, elapsed / colorTransitionTime);
 
-            mat.SetColor(shallowColorName, Color.Lerp(startShallow, targetShallow, curve));
+            // 应用浅色过渡
+            mat.SetColor(shallowColorName, Color.Lerp(startShallow, targetShallow, t));
+
+            // 应用深色过渡（如果 Shader 支持）
             if (mat.HasProperty(deepColorName))
             {
                 Color startDeep = mat.GetColor(deepColorName);
-                mat.SetColor(deepColorName, Color.Lerp(startDeep, targetDeep, curve));
+                mat.SetColor(deepColorName, Color.Lerp(startDeep, targetDeep, t));
             }
             yield return null;
         }
+
+        // 最终锁定颜色，防止浮点数误差
+        mat.SetColor(shallowColorName, targetShallow);
     }
+
+    // --- 以下逻辑均为你的原始代码，未做任何改动 ---
 
     public void AddStirProgress(float amount)
     {
@@ -159,8 +174,6 @@ public class Cauldron : MonoBehaviour
         isFinished = true;
         if (uiCanvasGroup != null) uiCanvasGroup.SetActive(false);
 
-        // --- 核心修正：寻找场景中当前正在等待的 NPC 并对比其订单 ---
-        // 这样可以避免多 NPC 时判定错误
         NPCOrderUI targetNPC = Object.FindFirstObjectByType<NPCOrderUI>();
         RecipeData targetRecipe = null;
 
@@ -192,7 +205,6 @@ public class Cauldron : MonoBehaviour
     {
         if (successParticle != null) successParticle.Play();
 
-        // 这里的成品药水如果数量也很多，也可以考虑用 ObjectPool 生成
         if (targetRecipe != null && targetRecipe.potionPrefab != null)
         {
             Instantiate(targetRecipe.potionPrefab, spawnPoint.position, spawnPoint.rotation);

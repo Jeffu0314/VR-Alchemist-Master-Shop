@@ -44,7 +44,6 @@ GameObject:
   - component: {fileID: 4981137997666758779}
   - component: {fileID: 3948637874132798854}
   - component: {fileID: 847800620584088647}
-  - component: {fileID: -6904438223470285732}
   m_Layer: 0
   m_Name: Water
   m_TagString: Ingredient
@@ -264,19 +263,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.023137093, y: 0.032246184, z: 0.023011535}
   m_Center: {x: -0.00020837784, y: 0.022313809, z: -0.0008220623}
---- !u!114 &-6904438223470285732
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3005000170095421244}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
-  ingredientPrefab: {fileID: 3005000170095421244}
 --- !u!1 &4916014458745976596
 GameObject:
   m_ObjectHideFlags: 0

@@ -69,14 +69,21 @@ public class ObjectPooler : MonoBehaviour
         }
 
         // 4. 核心修复：针对 XR 抓取物体的刷新逻辑
-        // 如果物体带有 XRGrabInteractable，我们需要确保它在重新激活后状态是“干净”的
         var grabInteractable = objectToSpawn.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         if (grabInteractable != null)
         {
-            // 如果物体正处于某种奇怪的选中状态，强制重置
-            // 这能解决“明明生成了却抓不起来”或者“手感僵死”的问题
+            // --- 关键添加：强制刷新交互组件 ---
+            // 很多时候 XR 组件在物体禁用后会卡在“已抓取”或“非法交互”状态
+            // 重新开关一次组件能强制它重新扫描 Interactors
+            grabInteractable.enabled = false;
+            grabInteractable.enabled = true;
+
+            // --- 关键添加：解除父子关系（防止物体粘在货架上） ---
+            // 如果你发现物体拿不动，可能是它还把自己当成货架的子物体
+            objectToSpawn.transform.SetParent(null);
         }
 
+        // 5. 循环入队，为下一次使用做准备
         poolDictionary[key].Enqueue(objectToSpawn);
         return objectToSpawn;
     }

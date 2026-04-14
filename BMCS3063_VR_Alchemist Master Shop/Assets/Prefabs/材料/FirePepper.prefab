@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 3323872223898706440}
   - component: {fileID: 5441223126670191432}
   - component: {fileID: 8140429858348250278}
-  - component: {fileID: 3506791564920741116}
   m_Layer: 0
   m_Name: FirePepper
   m_TagString: Ingredient
@@ -287,16 +286,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.499563, y: 1.136818, z: 5.393586}
   m_Center: {x: -0.12483251, y: 0.591387, z: -0.36282098}
---- !u!114 &3506791564920741116
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2134387433658811977}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
-  ingredientPrefab: {fileID: 2134387433658811977}

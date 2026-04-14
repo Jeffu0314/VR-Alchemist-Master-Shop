@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 4648955831154935967}
   - component: {fileID: 1843662029564995987}
   - component: {fileID: 7294371358140432466}
-  - component: {fileID: -3714828374566604523}
   m_Layer: 0
   m_Name: Honey
   m_TagString: Ingredient
@@ -287,16 +286,3 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
---- !u!114 &-3714828374566604523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8077362767283062790}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9e006823b768854f961bdbe7a24645d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MagicSource
-  ingredientPrefab: {fileID: 8077362767283062790}
