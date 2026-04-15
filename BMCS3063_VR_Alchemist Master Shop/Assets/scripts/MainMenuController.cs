@@ -7,7 +7,7 @@ public class MainMenuController : MonoBehaviour
     public void LoadMainGame()
     {
         // 确保引号里的名字和你主场景的文件名完全一致
-        SceneManager.LoadScene("MagicScene");
+        GetComponent<SceneFader>().FadeToScene("MagicScene");
     }
 
     // 退出游戏
