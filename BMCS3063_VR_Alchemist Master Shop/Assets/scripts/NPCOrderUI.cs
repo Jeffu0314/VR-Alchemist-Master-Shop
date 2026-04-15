@@ -49,7 +49,7 @@ public class NPCOrderUI : MonoBehaviour
     {
         if (orderCanvas == null || nameText == null || recipe == null) return;
 
-        nameText.text = "I need: " + recipe.potionName;
+        nameText.text = "I need " + recipe.potionName;
         orderCanvas.SetActive(true);
     }
 
