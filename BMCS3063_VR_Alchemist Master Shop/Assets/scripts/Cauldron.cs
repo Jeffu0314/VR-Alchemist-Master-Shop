@@ -184,6 +184,7 @@ public class Cauldron : MonoBehaviour
 
         if (CheckSuccess(targetRecipe))
             HandleSuccess(targetRecipe);
+            
         else
             HandleFailure();
     }
@@ -204,6 +205,11 @@ public class Cauldron : MonoBehaviour
     void HandleSuccess(RecipeData targetRecipe)
     {
         if (successParticle != null) successParticle.Play();
+
+        if (GameDataTracker.Instance != null)
+        {
+            GameDataTracker.Instance.potionsMade++;
+        }
 
         if (targetRecipe != null && targetRecipe.potionPrefab != null)
         {

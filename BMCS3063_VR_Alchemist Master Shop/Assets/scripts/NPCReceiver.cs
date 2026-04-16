@@ -33,6 +33,11 @@ public class NPCReceiver : MonoBehaviour
                 isProcessing = true;
                 Debug.Log("药水正确！开始单次结算流程...");
 
+                if (GameDataTracker.Instance != null)
+                {
+                    GameDataTracker.Instance.customersServed++;
+                }
+
                 // A: 获取价格
                 int rewardAmount = AlchemyManager.Instance.currentCustomerOrder.potionPrice;
 

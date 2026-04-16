@@ -41,6 +41,6 @@ public class VictoryUIController : MonoBehaviour
         PlayerPrefs.Save();
 
         // ж╠╫с╪сть StartScene
-        UnityEngine.SceneManagement.SceneManager.LoadScene("StartScene");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("EndScene");
     }
 }

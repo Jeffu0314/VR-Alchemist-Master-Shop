@@ -35224,7 +35224,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 22b23afedeadafb45bee57b09f80de57, type: 2}
   unlockedRecipes: []
   currentCustomerOrder: {fileID: 0}
-  currentCoins: 0
+  currentCoins: 4800
   winTarget: 5000
 --- !u!4 &2060906014
 Transform:
