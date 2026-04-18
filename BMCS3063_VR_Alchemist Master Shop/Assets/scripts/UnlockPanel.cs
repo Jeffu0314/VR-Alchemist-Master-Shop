@@ -27,7 +27,6 @@ public class UnlockPanel : MonoBehaviour
 
         priceText.text = price + " G";
 
-        // 自动获取音效源，如果面板没拖的话
         if (uiAudioSource == null && UISoundManager.Instance != null)
         {
             uiAudioSource = UISoundManager.Instance.uiAudioSource;
