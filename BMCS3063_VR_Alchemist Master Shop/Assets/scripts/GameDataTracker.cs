@@ -4,7 +4,6 @@ public class GameDataTracker : MonoBehaviour
 {
     public static GameDataTracker Instance;
 
-    [Header("统计数据")]
     public int potionsMade = 0;
     public int customersServed = 0;
 
@@ -26,8 +25,6 @@ public class GameDataTracker : MonoBehaviour
         }
     }
 
-    // --- 新增：停止计时功能 ---
-    // 在切换到 EndScene 之前调用这个方法
     public void StopTrackingTime()
     {
         if (isTimerRunning)
@@ -37,7 +34,6 @@ public class GameDataTracker : MonoBehaviour
         }
     }
 
-    // 获取游玩总时长（格式化为 分:秒）
     public string GetPlayTime()
     {
         float totalDisplayTime;

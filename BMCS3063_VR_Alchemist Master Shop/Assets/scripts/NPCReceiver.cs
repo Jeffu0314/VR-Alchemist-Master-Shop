@@ -22,18 +22,14 @@ public class NPCReceiver : MonoBehaviour
             {
                 isProcessing = true;
 
-                // 1. 财务结算
                 int rewardAmount = AlchemyManager.Instance.currentCustomerOrder.potionPrice;
                 AlchemyManager.Instance.AddCoins(rewardAmount);
 
-                // 2. 统计增加
                 if (GameDataTracker.Instance != null) GameDataTracker.Instance.customersServed++;
 
-                // 3. --- 关键：通知猫猫显示成功 ---
                 CatOrderDisplay cat = Object.FindFirstObjectByType<CatOrderDisplay>();
                 if (cat != null) cat.NotifyOrderSuccess();
 
-                // 4. 后续处理
                 if (socket.interactionManager != null) socket.interactionManager.SelectExit(socket, args.interactableObject);
                 currentNPC.OnReceivePotion();
                 Destroy(potion.gameObject, 0.1f);

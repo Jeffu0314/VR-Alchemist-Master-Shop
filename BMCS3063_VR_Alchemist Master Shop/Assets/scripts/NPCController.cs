@@ -115,7 +115,7 @@ public class NPCController : MonoBehaviour
 
     void OnReachedExit()
     {
-        Debug.Log("<color=red>NPC:</color> 已到达出口，销毁并请求下一个。");
+        
 
         if (NPCManager.Instance != null)
         {

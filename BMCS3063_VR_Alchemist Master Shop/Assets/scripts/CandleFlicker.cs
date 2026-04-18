@@ -14,7 +14,6 @@ public class CandleFlicker : MonoBehaviour
 
     void Update()
     {
-        // 使用 PerlinNoise 让亮度变化更自然，而不是随机乱闪
         float noise = Mathf.PerlinNoise(Time.time * 5f, 0f);
         candleLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, noise);
     }

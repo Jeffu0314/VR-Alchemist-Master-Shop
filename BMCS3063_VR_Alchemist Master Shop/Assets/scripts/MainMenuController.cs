@@ -3,17 +3,46 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
-    // 载入游戏主场景
-    public void LoadMainGame()
+    public GameObject mainMenuPanel;
+    public GameObject settingsPanel;
+
+    void Start()
     {
-        // 确保引号里的名字和你主场景的文件名完全一致
-        GetComponent<SceneFader>().FadeToScene("MagicScene");
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);  
+        if (settingsPanel != null) settingsPanel.SetActive(false); 
     }
 
-    // 退出游戏
+    public void LoadMainGame()
+    {
+        if (GetComponent<SceneFader>() != null)
+        {
+            GetComponent<SceneFader>().FadeToScene("MagicScene");
+        }
+        else
+        {
+            SceneManager.LoadScene("MagicScene");
+        }
+    }
+
     public void QuitGame()
     {
-        Debug.Log("Quit");
+        Debug.Log("Quit Game");
         Application.Quit();
+    }
+
+    public void OpenSettings()
+    {
+        UISoundManager.Instance.PlayClick();
+
+        mainMenuPanel.SetActive(false);
+        settingsPanel.SetActive(true);
+    }
+
+    public void BackToMainMenu()
+    {
+        UISoundManager.Instance.PlayClick();
+
+        settingsPanel.SetActive(false);
+        mainMenuPanel.SetActive(true);
     }
 }

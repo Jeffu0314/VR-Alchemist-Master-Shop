@@ -6,11 +6,10 @@ public class AlchemyManager : MonoBehaviour
     public static AlchemyManager Instance;
 
     [Header("Recipes Data")]
-    public List<RecipeData> allRecipes = new List<RecipeData>();    // 所有配方总表
-    public List<RecipeData> unlockedRecipes = new List<RecipeData>(); // 玩家已学会的配方
+    public List<RecipeData> allRecipes = new List<RecipeData>();    
+    public List<RecipeData> unlockedRecipes = new List<RecipeData>(); 
 
     [Header("Game Status")]
-    // 注意：在多 NPC 模式下，这个变量仅作为“最后生成的订单”记录，主要判定应参考 NPC 自身
     public RecipeData currentCustomerOrder;
     public int currentCoins = 0;
     public int winTarget = 5000;
@@ -22,8 +21,6 @@ public class AlchemyManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            // 如果这个经理跨场景，可以取消注释下面这行
-            // DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -45,10 +42,8 @@ public class AlchemyManager : MonoBehaviour
                 unlockedRecipes.Add(allRecipes[i]);
             }
         }
-        Debug.Log("初始化完成，当前可用药水种类: " + unlockedRecipes.Count);
     }
 
-    // --- 核心修复：添加这个方法供 NPCOrderUI 调用 ---
     public RecipeData GetRandomUnlockedRecipe()
     {
         if (unlockedRecipes.Count > 0)
@@ -56,12 +51,10 @@ public class AlchemyManager : MonoBehaviour
             int randomIndex = Random.Range(0, unlockedRecipes.Count);
             RecipeData selectedRecipe = unlockedRecipes[randomIndex];
 
-            // 同步更新一下全局变量，方便调试查看
             currentCustomerOrder = selectedRecipe;
             return selectedRecipe;
         }
 
-        Debug.LogError("经理：没有已解锁的配方！");
         return null;
     }
 
@@ -69,7 +62,6 @@ public class AlchemyManager : MonoBehaviour
     public void AddCoins(int amount)
     {
         currentCoins += amount;
-        Debug.Log($"<color=green>收入: {amount}</color> | 总金币: {currentCoins}");
 
         if (currentCoins >= winTarget)
         {
@@ -83,7 +75,6 @@ public class AlchemyManager : MonoBehaviour
         if (currentCoins >= amount)
         {
             currentCoins -= amount;
-            Debug.Log("<color=yellow>消费成功：</color>" + amount);
             return true;
         }
         return false;
@@ -95,26 +86,18 @@ public class AlchemyManager : MonoBehaviour
         if (!unlockedRecipes.Contains(newRecipe))
         {
             unlockedRecipes.Add(newRecipe);
-            Debug.Log("<color=lime>解锁了新配方: </color>" + newRecipe.potionName);
         }
     }
 
     void TriggerGameWin()
     {
-        // 如果已经弹过窗了，就不再执行
         if (hasTriggeredWinMenu) return;
 
-        Debug.Log("<color=cyan><b>[胜利]</b></color> 赚够了目标金币！");
 
-        // 核心逻辑：调用我们下面要写的 UI 控制器
         if (VictoryUIController.Instance != null)
         {
-            hasTriggeredWinMenu = true; // 标记已触发
+            hasTriggeredWinMenu = true; 
             VictoryUIController.Instance.ShowMenu();
-        }
-        else
-        {
-            Debug.LogError("找不到 VictoryUIController 实例！请确保场景中有该 UI 并在脚本中设置了 Instance");
         }
     }
 }

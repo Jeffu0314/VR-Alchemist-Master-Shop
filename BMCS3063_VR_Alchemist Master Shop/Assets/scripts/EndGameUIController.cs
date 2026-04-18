@@ -6,25 +6,22 @@ using UnityEngine.SceneManagement;
 public class MovieCreditsController : MonoBehaviour
 {
     [Header("UI Components")]
-    public TextMeshProUGUI statsText;    // 统计和致谢的文本框
-    public CanvasGroup canvasGroup;      // 整个 UI 的淡入淡出控制
-    public GameObject returnButton;      // 返回按钮（初始设为隐藏）
+    public TextMeshProUGUI statsText;   
+    public CanvasGroup canvasGroup;     
+    public GameObject returnButton;     
 
     [Header("Movie Settings")]
-    public float fadeSpeed = 0.5f;       // 淡入速度
-    public float scrollSpeed = 40f;      // 文字向上飘的速度
-    public float pauseBeforeScroll = 2f; // 战报出来后停顿多久再开始飘
+    public float fadeSpeed = 0.5f;       
+    public float scrollSpeed = 40f;    
+    public float pauseBeforeScroll = 2f; 
 
     void Start()
     {
-        // 1. 初始化状态
         canvasGroup.alpha = 0;
         if (returnButton != null) returnButton.SetActive(false);
 
-        // 2. 检查数据并设置文本
         if (GameDataTracker.Instance == null)
         {
-            Debug.LogError("未找到 GameDataTracker！");
             statsText.text = "Thanks for playing!";
         }
         else
@@ -32,7 +29,6 @@ public class MovieCreditsController : MonoBehaviour
             SetupFinalText();
         }
 
-        // 3. 启动电影序列
         StartCoroutine(PlayMovieSequence());
     }
 
@@ -41,7 +37,6 @@ public class MovieCreditsController : MonoBehaviour
         var data = GameDataTracker.Instance;
         string time = data.GetPlayTime();
 
-        // 重新整理字符串，删除多余的重复块
         statsText.text =
             $"<line-height=150%>" +
             $"<size=180%><b>ALCHEMICAL SUMMARY</b></size>\n\n" +
@@ -73,7 +68,6 @@ public class MovieCreditsController : MonoBehaviour
 
     IEnumerator PlayMovieSequence()
     {
-        // A. 整体淡入
         yield return new WaitForSeconds(1f);
         while (canvasGroup.alpha < 1)
         {
@@ -81,13 +75,10 @@ public class MovieCreditsController : MonoBehaviour
             yield return null;
         }
 
-        // B. 停顿让玩家看清楚统计数据
         yield return new WaitForSeconds(pauseBeforeScroll);
 
-        // --- 核心改动：在滚动开始的同时，启动一个倒计时显示按钮的任务 ---
         StartCoroutine(ShowButtonAfterDelay(3f));
 
-        // C. 开始电影滚动
         float startY = statsText.transform.localPosition.y;
         float contentHeight = statsText.preferredHeight;
         float targetY = startY + contentHeight + 1000f;
@@ -99,14 +90,12 @@ public class MovieCreditsController : MonoBehaviour
         }
     }
 
-    // 新增：专门负责倒计时显示按钮的协程
     IEnumerator ShowButtonAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         if (returnButton != null)
         {
             returnButton.SetActive(true);
-            // 顺便给按钮加个淡入效果（可选）
             CanvasGroup btnGroup = returnButton.GetComponent<CanvasGroup>();
             if (btnGroup != null)
             {

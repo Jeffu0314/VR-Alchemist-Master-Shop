@@ -10,7 +10,6 @@ public class SceneFader : MonoBehaviour
 
     public void FadeToScene(string sceneName)
     {
-        Debug.Log("¿ªÊ¼ºÚÄ»¹ý¶É...");
         StartCoroutine(FadeOutAndLoad(sceneName));
     }
 

@@ -5,13 +5,49 @@ public class CoinDisplay : MonoBehaviour
 {
     public TextMeshProUGUI coinText;
 
-    // 每帧更新虽然消耗小，但我们可以优化为每秒更新几次，或者通过事件更新
+    public AudioSource coinAudioSource; 
+    public AudioClip coinGainSound;    
+
+    private int lastCoinAmount = 0;    
+
+    void Start()
+    {
+        if (AlchemyManager.Instance != null)
+        {
+            lastCoinAmount = AlchemyManager.Instance.currentCoins;
+            UpdateText(lastCoinAmount);
+        }
+    }
+
     void Update()
     {
-        if (AlchemyManager.Instance != null && coinText != null)
+        if (AlchemyManager.Instance == null || coinText == null) return;
+
+        int currentCoins = AlchemyManager.Instance.currentCoins;
+
+        if (currentCoins > lastCoinAmount)
         {
-            // 格式化显示：例如 "Coins: 1250 G"
-            coinText.text = AlchemyManager.Instance.currentCoins.ToString() + " G";
+            PlayCoinSound();
+            UpdateText(currentCoins);
+            lastCoinAmount = currentCoins; 
+        }
+        else if (currentCoins < lastCoinAmount)
+        {
+            UpdateText(currentCoins);
+            lastCoinAmount = currentCoins;
+        }
+    }
+
+    void UpdateText(int amount)
+    {
+        coinText.text = amount.ToString() + " G";
+    }
+
+    void PlayCoinSound()
+    {
+        if (coinAudioSource != null && coinGainSound != null)
+        {
+            coinAudioSource.PlayOneShot(coinGainSound);
         }
     }
 }

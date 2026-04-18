@@ -9,11 +9,11 @@ public class RecipeData : ScriptableObject
     public Sprite potionIcon;          // 药水图标
 
     [Header("Visual Settings")]
-    public GameObject potionPrefab;    // <--- 关键：拖入该药水对应的 3D 模型预制体
-    public Color liquidColor;          // 坩埚液体的颜色
+    public GameObject potionPrefab;    
+    public Color liquidColor;         
 
     [Header("Price Settings")]
-    public int potionPrice;            // 卖给 NPC 的价格
+    public int potionPrice;            
 
     [Header("Recipe Ratios")]
     public List<IngredientRequirement> ingredients;

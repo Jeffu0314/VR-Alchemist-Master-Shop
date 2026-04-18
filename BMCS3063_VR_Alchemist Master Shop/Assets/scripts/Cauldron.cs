@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(AudioSource))]
 public class Cauldron : MonoBehaviour
 {
     [Header("Ingredients Logic")]
     public Dictionary<string, float> currentMix = new Dictionary<string, float>();
     private Color internalMixedColor;
     private float totalIngredientAmount = 0f;
+    private Vector3 colorRGBAccumulator = Vector3.zero; // 颜色分量累加器
 
     [Header("Stirring Settings")]
     public float stirRequired = 10.0f;
     public float currentStirProgress = 0f;
+    private float lastFrameStirProgress = 0f;
     private bool isFinished = false;
 
     [Header("UI Settings")]
@@ -26,11 +29,19 @@ public class Cauldron : MonoBehaviour
     public Renderer liquidRenderer;
     public Transform liquidVisual;
 
+    [Header("Audio Settings")]
+    public AudioSource cauldronAudioSource;
+    public AudioSource stirringAudioSource;
+    public AudioClip splashSound;
+    public AudioClip successSound;
+    public AudioClip failSound;
+    public AudioClip stirLoopSound;
+
     [Header("Color Settings")]
     public string shallowColorName = "_ShallowColor";
     public string deepColorName = "_DeepColor";
-    public float colorTransitionTime = 1.8f;
-    [Range(0, 1)] public float baseColorInfluence = 0.3f; // 初始锅水对第一份材料的影响力
+    public float colorTransitionTime = 1.2f;
+    [Range(0, 1)] public float baseColorInfluence = 0.4f; // 初始锅水对整体颜色的稀释权重
 
     [Header("Spawn Settings")]
     public Transform spawnPoint;
@@ -38,21 +49,47 @@ public class Cauldron : MonoBehaviour
 
     private Color originalLiquidColor;
     private Coroutine colorChangeCoroutine;
+    private float stirFadeSpeed = 8f;
 
     void Start()
     {
+        // 初始化基础颜色
         if (liquidRenderer != null && liquidRenderer.material.HasProperty(shallowColorName))
         {
             originalLiquidColor = liquidRenderer.material.GetColor(shallowColorName);
             internalMixedColor = originalLiquidColor;
         }
 
+        // 初始化 UI
         if (uiCanvasGroup != null) uiCanvasGroup.SetActive(false);
         if (progressSlider != null)
         {
             progressSlider.minValue = 0;
             progressSlider.maxValue = stirRequired;
             progressSlider.value = 0;
+        }
+
+        // 音频组件初始化
+        if (cauldronAudioSource == null) cauldronAudioSource = GetComponent<AudioSource>();
+
+        if (stirringAudioSource != null && stirLoopSound != null)
+        {
+            stirringAudioSource.clip = stirLoopSound;
+            stirringAudioSource.loop = true;
+            stirringAudioSource.volume = 0;
+            stirringAudioSource.Play();
+        }
+    }
+
+    void Update()
+    {
+        // 搅拌声音逻辑：仅当进度条在移动时播放
+        if (stirringAudioSource != null)
+        {
+            bool isStirringNow = currentStirProgress > lastFrameStirProgress && !isFinished;
+            float targetVolume = isStirringNow ? 1f : 0f;
+            stirringAudioSource.volume = Mathf.Lerp(stirringAudioSource.volume, targetVolume, Time.deltaTime * stirFadeSpeed);
+            lastFrameStirProgress = currentStirProgress;
         }
     }
 
@@ -62,35 +99,38 @@ public class Cauldron : MonoBehaviour
 
         if (ingredient != null)
         {
+            PlaySound(splashSound);
             float addedAmount = ingredient.amount;
 
-            // --- 自然颜色混合逻辑开始 ---
+            // --- 物理级自然颜色混合算法 ---
+            Vector3 newColorVector = new Vector3(ingredient.ingredientColor.r, ingredient.ingredientColor.g, ingredient.ingredientColor.b);
+
             if (totalIngredientAmount == 0)
             {
-                // 第一份材料：从锅水原色渐变到材料颜色
-                // 此时 internalMixedColor 直接设为目标色，由协程去完成视觉过渡
-                internalMixedColor = Color.Lerp(originalLiquidColor, ingredient.ingredientColor, 1f - baseColorInfluence);
+                // 第一份材料：将锅水原色作为底色加入累加池
+                Vector3 baseColorVector = new Vector3(originalLiquidColor.r, originalLiquidColor.g, originalLiquidColor.b);
+
+                // 初始权重 = 基础权重 + 第一份材料分量
+                colorRGBAccumulator = (baseColorVector * baseColorInfluence) + (newColorVector * addedAmount);
+                totalIngredientAmount = baseColorInfluence + addedAmount;
             }
             else
             {
-                // 物理混合：基于当前总量计算新颜色的权重
-                float total = totalIngredientAmount + addedAmount;
-                float ratio = addedAmount / total;
-
-                // 重点：使用线性插值混合。加红色就变红，加黄色就变橘
-                internalMixedColor = Color.Lerp(internalMixedColor, ingredient.ingredientColor, ratio);
+                colorRGBAccumulator += newColorVector * addedAmount;
+                totalIngredientAmount += addedAmount;
             }
 
-            totalIngredientAmount += addedAmount;
-            // --- 自然颜色混合逻辑结束 ---
+            // 计算平均值并转换为颜色
+            Vector3 finalRGB = colorRGBAccumulator / totalIngredientAmount;
+            internalMixedColor = new Color(finalRGB.x, finalRGB.y, finalRGB.z, 1.0f);
 
-            // 记录配方 (保持原样)
+            // 记录配方
             if (currentMix.ContainsKey(ingredient.ingredientName))
                 currentMix[ingredient.ingredientName] += addedAmount;
             else
                 currentMix.Add(ingredient.ingredientName, addedAmount);
 
-            // 粒子反馈 (保持原样)
+            // 粒子与变色
             if (splashParticle != null)
             {
                 splashParticle.transform.position = other.transform.position + Vector3.up * 0.1f;
@@ -100,7 +140,6 @@ public class Cauldron : MonoBehaviour
                 splashParticle.Play();
             }
 
-            // --- 触发平滑变色协程 ---
             if (liquidRenderer != null)
             {
                 if (colorChangeCoroutine != null) StopCoroutine(colorChangeCoroutine);
@@ -110,40 +149,6 @@ public class Cauldron : MonoBehaviour
             other.gameObject.SetActive(false);
         }
     }
-
-    IEnumerator SmoothChangeColor(Color targetShallow)
-    {
-        Material mat = liquidRenderer.material;
-        Color startShallow = mat.GetColor(shallowColorName);
-
-        // 计算对应的深色层，保持视觉深度
-        Color targetDeep = targetShallow * 0.35f; // 自然深色通常是浅色的 35%
-        targetDeep.a = 1.0f;
-
-        float elapsed = 0;
-        while (elapsed < colorTransitionTime)
-        {
-            elapsed += Time.deltaTime;
-            // 使用 SmoothStep 提供最自然的淡入淡出（S型）插值曲线
-            float t = Mathf.SmoothStep(0, 1, elapsed / colorTransitionTime);
-
-            // 应用浅色过渡
-            mat.SetColor(shallowColorName, Color.Lerp(startShallow, targetShallow, t));
-
-            // 应用深色过渡（如果 Shader 支持）
-            if (mat.HasProperty(deepColorName))
-            {
-                Color startDeep = mat.GetColor(deepColorName);
-                mat.SetColor(deepColorName, Color.Lerp(startDeep, targetDeep, t));
-            }
-            yield return null;
-        }
-
-        // 最终锁定颜色，防止浮点数误差
-        mat.SetColor(shallowColorName, targetShallow);
-    }
-
-    // --- 以下逻辑均为你的原始代码，未做任何改动 ---
 
     public void AddStirProgress(float amount)
     {
@@ -176,67 +181,73 @@ public class Cauldron : MonoBehaviour
 
         NPCOrderUI targetNPC = Object.FindFirstObjectByType<NPCOrderUI>();
         RecipeData targetRecipe = null;
-
-        if (targetNPC != null)
-        {
-            targetRecipe = targetNPC.GetMyOrder();
-        }
+        if (targetNPC != null) targetRecipe = targetNPC.GetMyOrder();
 
         if (CheckSuccess(targetRecipe))
             HandleSuccess(targetRecipe);
-            
         else
             HandleFailure();
     }
 
-    bool CheckSuccess(RecipeData recipe)
-    {
-        if (recipe == null) return false;
-
-        foreach (var req in recipe.ingredients)
-        {
-            if (!currentMix.ContainsKey(req.ingredientName)) return false;
-            float error = Mathf.Abs(currentMix[req.ingredientName] - req.requiredAmount) / req.requiredAmount;
-            if (error > 0.25f) return false;
-        }
-        return currentMix.Count == recipe.ingredients.Count;
-    }
-
     void HandleSuccess(RecipeData targetRecipe)
     {
+        PlaySound(successSound);
         if (successParticle != null) successParticle.Play();
-
-        if (GameDataTracker.Instance != null)
-        {
-            GameDataTracker.Instance.potionsMade++;
-        }
-
+        if (GameDataTracker.Instance != null) GameDataTracker.Instance.potionsMade++;
         if (targetRecipe != null && targetRecipe.potionPrefab != null)
-        {
             Instantiate(targetRecipe.potionPrefab, spawnPoint.position, spawnPoint.rotation);
-        }
         ResetCauldron();
     }
 
     void HandleFailure()
     {
+        PlaySound(failSound);
         if (failParticle != null) failParticle.Play();
         if (junkPotionPrefab != null) Instantiate(junkPotionPrefab, spawnPoint.position, spawnPoint.rotation);
 
         if (colorChangeCoroutine != null) StopCoroutine(colorChangeCoroutine);
         colorChangeCoroutine = StartCoroutine(SmoothChangeColor(Color.black));
-
         ResetCauldron();
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (cauldronAudioSource != null && clip != null)
+            cauldronAudioSource.PlayOneShot(clip);
+    }
+
+    IEnumerator SmoothChangeColor(Color targetShallow)
+    {
+        Material mat = liquidRenderer.material;
+        Color startShallow = mat.GetColor(shallowColorName);
+        Color targetDeep = targetShallow * 0.35f;
+        targetDeep.a = 1.0f;
+
+        float elapsed = 0;
+        while (elapsed < colorTransitionTime)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.SmoothStep(0, 1, elapsed / colorTransitionTime);
+            mat.SetColor(shallowColorName, Color.Lerp(startShallow, targetShallow, t));
+            if (mat.HasProperty(deepColorName))
+            {
+                Color startDeep = mat.GetColor(deepColorName);
+                mat.SetColor(deepColorName, Color.Lerp(startDeep, targetDeep, t));
+            }
+            yield return null;
+        }
+        mat.SetColor(shallowColorName, targetShallow);
     }
 
     public void ResetCauldron()
     {
         currentMix.Clear();
         currentStirProgress = 0f;
+        lastFrameStirProgress = 0f;
         totalIngredientAmount = 0f;
+        colorRGBAccumulator = Vector3.zero; // 重置颜色池
         isFinished = false;
         if (progressSlider != null) progressSlider.value = 0;
-
         Invoke(nameof(StartResetColor), 3.0f);
     }
 
@@ -244,5 +255,17 @@ public class Cauldron : MonoBehaviour
     {
         if (colorChangeCoroutine != null) StopCoroutine(colorChangeCoroutine);
         colorChangeCoroutine = StartCoroutine(SmoothChangeColor(originalLiquidColor));
+    }
+
+    bool CheckSuccess(RecipeData recipe)
+    {
+        if (recipe == null) return false;
+        foreach (var req in recipe.ingredients)
+        {
+            if (!currentMix.ContainsKey(req.ingredientName)) return false;
+            float error = Mathf.Abs(currentMix[req.ingredientName] - req.requiredAmount) / req.requiredAmount;
+            if (error > 0.25f) return false;
+        }
+        return currentMix.Count == recipe.ingredients.Count;
     }
 }
